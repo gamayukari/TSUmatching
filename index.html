@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSUお仕事マッチングサイト</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>TSUお仕事マッチングサイト</h1>
+    <p>仕事を依頼したい方・受けたい方のための掲示板です</p>
+  </header>
+
+  <div class="tabs">
+    <button id="tab-hire" class="tab active" onclick="switchTab('hire')">
+      💼 仕事をお願いしたい<span class="tab-sub">（右腕を探す）</span>
+    </button>
+    <button id="tab-work" class="tab" onclick="switchTab('work')">
+      🙋 仕事を受けたい<span class="tab-sub">（仕事を探す）</span>
+    </button>
+  </div>
+
+  <main>
+    <div class="toolbar">
+      <span id="post-count" class="post-count"></span>
+      <button class="btn-primary" onclick="openNewPostModal()">＋ 投稿する</button>
+    </div>
+    <div id="post-list">
+      <div class="loading">読み込み中...</div>
+    </div>
+  </main>
+
+  <!-- 投稿モーダル -->
+  <div id="modal-overlay" class="modal-overlay hidden" onclick="handleOverlayClick(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h2 id="modal-title">新規投稿</h2>
+      <form id="post-form" onsubmit="submitNewPost(event)">
+
+        <div class="form-group">
+          <label for="f-author">ニックネーム <span class="required">必須</span></label>
+          <input type="text" id="f-author" placeholder="例: えれな" required maxlength="50">
+        </div>
+
+        <div class="form-group">
+          <label for="f-title">タイトル <span class="required">必須</span></label>
+          <input type="text" id="f-title" placeholder="例: スケジュール管理が得意な右腕を探しています" required maxlength="100">
+        </div>
+
+        <div class="form-group">
+          <label for="f-description">詳細 <span class="required">必須</span></label>
+          <textarea id="f-description" rows="5" placeholder="仕事内容・条件・人柄など、詳しく書いてください" required maxlength="2000"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="f-contact">連絡先 <span class="required">必須</span></label>
+          <input type="text" id="f-contact" placeholder="例: メールアドレス、LINE ID、InstagramのDMなど" required maxlength="200">
+        </div>
+
+        <!-- hire側のみ -->
+        <div id="hire-fields">
+          <div class="form-group">
+            <label for="f-budget">予算感 <span class="optional">任意</span></label>
+            <input type="text" id="f-budget" placeholder="例: 月5万円〜、時給1,500円〜、都度相談" maxlength="100">
+          </div>
+        </div>
+
+        <!-- work側のみ -->
+        <div id="work-fields" class="hidden">
+          <div class="form-group">
+            <label for="f-skills">スキル <span class="optional">任意</span></label>
+            <input type="text" id="f-skills" placeholder="例: 資料作成、スケジュール管理、SNS運用" maxlength="200">
+          </div>
+          <div class="form-group">
+            <label for="f-experience">経験 <span class="optional">任意</span></label>
+            <textarea id="f-experience" rows="2" placeholder="例: 秘書3年、フリーランス2年" maxlength="500"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="f-desired">希望する仕事の種類 <span class="optional">任意</span></label>
+            <input type="text" id="f-desired" placeholder="例: 週10時間のリモート業務、単発OK" maxlength="200">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary btn-submit" id="submit-btn">投稿する</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
