@@ -393,10 +393,14 @@ function openNewPostModal() {
     title.textContent = '右腕を募集する';
     hireFields.classList.remove('hidden');
     workFields.classList.add('hidden');
+    document.getElementById('f-title').placeholder = 'オンライン秘書を募集しています';
+    document.getElementById('f-description').placeholder = '【仕事内容】\nお願いしたい業務を具体的に書いてください\n\n【求める人物像】\nこんな方に来てほしい！を書いてください\n\n【条件】\n月間〇時間程度・〇円';
   } else {
     title.textContent = '仕事を探している';
     hireFields.classList.add('hidden');
     workFields.classList.remove('hidden');
+    document.getElementById('f-title').placeholder = 'ショート動画編集請け負います';
+    document.getElementById('f-description').placeholder = '【できる仕事】\n対応できる業務を書いてください\n\n【スキル・使用ツール】\n得意なスキルやツールを書いてください\n\n【希望報酬】\n時給〇〇円〜 / 案件ごと相談可';
   }
 
   document.getElementById('modal-overlay').classList.remove('hidden');
