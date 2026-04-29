@@ -161,11 +161,11 @@ function renderDetailContent(post) {
       </div>`;
   }
 
-  const actions = post.edit_key ? `
+  const actions = (post.edit_key && post.author_email) ? `
     <div class="post-actions">
-      ${!isClosed ? `<button class="btn-success" onclick="requestAuth('close', '${post.id}', '${escapeHtml(post.edit_key)}')">🤝 成約済みにする</button>` : ''}
-      <button class="btn-secondary" onclick="requestAuth('edit', '${post.id}', '${escapeHtml(post.edit_key)}')">✏️ 編集する</button>
-      <button class="btn-danger" onclick="requestAuth('delete', '${post.id}', '${escapeHtml(post.edit_key)}')">🗑 削除する</button>
+      ${!isClosed ? `<button class="btn-success" onclick="requestAuth('close', '${post.id}', '${escapeHtml(post.edit_key)}', '${escapeHtml(post.author_email)}')">🤝 成約済みにする</button>` : ''}
+      <button class="btn-secondary" onclick="requestAuth('edit', '${post.id}', '${escapeHtml(post.edit_key)}', '${escapeHtml(post.author_email)}')">✏️ 編集する</button>
+      <button class="btn-danger" onclick="requestAuth('delete', '${post.id}', '${escapeHtml(post.edit_key)}', '${escapeHtml(post.author_email)}')">🗑 削除する</button>
     </div>` : '';
 
   return `
@@ -176,7 +176,7 @@ function renderDetailContent(post) {
     ${extra}
     <div class="detail-section">
       <div class="detail-label">連絡先</div>
-      <div class="contact-value">${escapeHtml(post.contact)}</div>
+      <div class="contact-value">${linkify(post.contact)}</div>
     </div>
     ${actions}
     <div class="comments-section" id="comments-${post.id}">
@@ -185,13 +185,14 @@ function renderDetailContent(post) {
 }
 
 // ─── 投稿者認証 ─────────────────────────────────────────────────
-function requestAuth(action, postId, editKey) {
-  pendingAuthAction = { action, postId, editKey };
-  const titles = { edit: '編集用パスワード', delete: '削除用パスワード', close: '成約済みにする' };
+function requestAuth(action, postId, editKey, authorEmail) {
+  pendingAuthAction = { action, postId, editKey, authorEmail };
+  const titles = { edit: '編集する', delete: '削除する', close: '成約済みにする' };
   document.getElementById('auth-modal-title').textContent = titles[action];
+  document.getElementById('auth-email').value = '';
   document.getElementById('auth-password').value = '';
   document.getElementById('auth-modal-overlay').classList.remove('hidden');
-  document.getElementById('auth-password').focus();
+  document.getElementById('auth-email').focus();
 }
 
 function closeAuthModal() {
@@ -205,11 +206,12 @@ function handleAuthOverlayClick(event) {
 
 async function confirmAuth() {
   if (!pendingAuthAction) return;
-  const { action, postId, editKey } = pendingAuthAction;
-  const entered = document.getElementById('auth-password').value;
+  const { action, postId, editKey, authorEmail } = pendingAuthAction;
+  const enteredEmail = document.getElementById('auth-email').value.trim();
+  const enteredPassword = document.getElementById('auth-password').value;
 
-  if (entered !== editKey) {
-    alert('パスワードが違います');
+  if (enteredEmail !== authorEmail || enteredPassword !== editKey) {
+    alert('メールアドレスまたはパスワードが違います');
     return;
   }
 
@@ -430,7 +432,9 @@ async function submitNewPost(event) {
     status: 'active',
   };
 
+  const email = document.getElementById('f-email').value.trim();
   if (editKey) postData.edit_key = editKey;
+  if (email) postData.author_email = email;
 
   if (currentTab === 'hire') {
     const budget = document.getElementById('f-budget').value.trim();
@@ -461,6 +465,15 @@ async function submitNewPost(event) {
 function formatDate(iso) {
   const d = new Date(iso);
   return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function linkify(str) {
+  if (!str) return '';
+  const escaped = escapeHtml(str);
+  return escaped.replace(
+    /(https?:\/\/[^\s<>"']+)/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:inherit;word-break:break-all;">$1</a>'
+  );
 }
 
 function escapeHtml(str) {
