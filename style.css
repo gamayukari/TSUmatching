@@ -28,7 +28,7 @@ body {
 
 /* ── Header ── */
 header {
-  background: linear-gradient(135deg, #e8622a 0%, #c0392b 100%);
+  background: linear-gradient(135deg, #1e2d5a 0%, #2c1654 100%);
   color: white;
   padding: 28px 20px 22px;
   text-align: center;
@@ -170,10 +170,8 @@ body.tab-work .btn-primary { background: var(--work-color); }
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
-}
-
-@media (min-width: 640px) {
-  #post-list { grid-template-columns: 1fr 1fr; }
+  max-width: 620px;
+  margin: 0 auto;
 }
 
 .loading {
