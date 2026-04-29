@@ -128,7 +128,7 @@ async function togglePostDetail(postId) {
   }
 
   detailEl.innerHTML = renderDetailContent(post);
-  await loadComments(postId);
+  await loadComments(postId, post.status === 'closed');
 }
 
 // ─── 詳細内容HTML ────────────────────────────────────────────────
@@ -319,7 +319,7 @@ async function submitEditPost(event) {
 }
 
 // ─── コメント読み込み ────────────────────────────────────────────
-async function loadComments(postId) {
+async function loadComments(postId, isClosed = false) {
   const section = document.getElementById(`comments-${postId}`);
   if (!section) return;
 
@@ -345,14 +345,18 @@ async function loadComments(postId) {
           <div class="comment-body">${escapeHtml(c.content)}</div>
         </div>`).join('');
 
+  const commentForm = isClosed
+    ? `<div style="font-size:0.85rem;color:#999;padding:10px 0;">🤝 成約済みのためコメントは締め切られています</div>`
+    : `<form class="comment-form" onsubmit="submitComment(event, '${postId}')">
+        <input type="text" id="c-author-${postId}" placeholder="ニックネーム" required maxlength="50">
+        <textarea id="c-body-${postId}" rows="3" placeholder="コメントを書く..." required maxlength="500"></textarea>
+        <button type="submit" class="btn-comment">送信</button>
+      </form>`;
+
   section.innerHTML = `
     <div class="comments-title">💬 コメント (${comments.length}件)</div>
     <div id="comment-list-${postId}">${commentListHtml}</div>
-    <form class="comment-form" onsubmit="submitComment(event, '${postId}')">
-      <input type="text" id="c-author-${postId}" placeholder="ニックネーム" required maxlength="50">
-      <textarea id="c-body-${postId}" rows="3" placeholder="コメントを書く..." required maxlength="500"></textarea>
-      <button type="submit" class="btn-comment">送信</button>
-    </form>`;
+    ${commentForm}`;
 }
 
 // ─── コメント送信 ────────────────────────────────────────────────
