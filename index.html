@@ -55,7 +55,7 @@
         </div>
 
         <div class="form-group">
-          <label for="f-contact">連絡先 <span class="required">必須</span></label>
+          <label for="f-contact">連絡先（メール・LINE等）<span class="required">必須</span></label>
           <input type="text" id="f-contact" placeholder="例: メールアドレス、LINE ID、InstagramのDMなど" required maxlength="200">
         </div>
 
@@ -83,8 +83,71 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label for="f-editkey">編集用パスワード <span class="optional">任意</span></label>
+          <input type="text" id="f-editkey" placeholder="投稿を後で編集・削除するときに使います" maxlength="50">
+          <p class="form-hint">※設定しておくと投稿の修正・削除・成約済みへの変更ができます</p>
+        </div>
+
         <button type="submit" class="btn-primary btn-submit" id="submit-btn">投稿する</button>
       </form>
+    </div>
+  </div>
+
+  <!-- 編集モーダル -->
+  <div id="edit-modal-overlay" class="modal-overlay hidden" onclick="handleEditOverlayClick(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+      <h2>投稿を編集する</h2>
+      <form id="edit-form" onsubmit="submitEditPost(event)">
+        <input type="hidden" id="ef-id">
+        <div class="form-group">
+          <label for="ef-title">タイトル <span class="required">必須</span></label>
+          <input type="text" id="ef-title" required maxlength="100">
+        </div>
+        <div class="form-group">
+          <label for="ef-description">詳細 <span class="required">必須</span></label>
+          <textarea id="ef-description" rows="5" required maxlength="2000"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="ef-contact">連絡先 <span class="required">必須</span></label>
+          <input type="text" id="ef-contact" required maxlength="200">
+        </div>
+        <div id="ef-hire-fields">
+          <div class="form-group">
+            <label for="ef-budget">予算感 <span class="optional">任意</span></label>
+            <input type="text" id="ef-budget" maxlength="100">
+          </div>
+        </div>
+        <div id="ef-work-fields" class="hidden">
+          <div class="form-group">
+            <label for="ef-skills">スキル <span class="optional">任意</span></label>
+            <input type="text" id="ef-skills" maxlength="200">
+          </div>
+          <div class="form-group">
+            <label for="ef-experience">経験 <span class="optional">任意</span></label>
+            <textarea id="ef-experience" rows="2" maxlength="500"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="ef-desired">希望する仕事の種類 <span class="optional">任意</span></label>
+            <input type="text" id="ef-desired" maxlength="200">
+          </div>
+        </div>
+        <button type="submit" class="btn-primary btn-submit">更新する</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- パスワード確認モーダル -->
+  <div id="auth-modal-overlay" class="modal-overlay hidden" onclick="handleAuthOverlayClick(event)">
+    <div class="modal modal-small">
+      <button class="modal-close" onclick="closeAuthModal()">✕</button>
+      <h2 id="auth-modal-title">編集用パスワード</h2>
+      <p id="auth-modal-desc" class="auth-desc">投稿時に設定したパスワードを入力してください</p>
+      <div class="form-group">
+        <input type="password" id="auth-password" placeholder="パスワード" maxlength="50">
+      </div>
+      <button class="btn-primary btn-submit" onclick="confirmAuth()">確認</button>
     </div>
   </div>
 

@@ -78,9 +78,7 @@ header p {
   margin-top: 2px;
 }
 
-.tab:hover {
-  background: #fafafa;
-}
+.tab:hover { background: #fafafa; }
 
 #tab-hire.active {
   color: var(--hire-color);
@@ -126,18 +124,46 @@ main {
   transition: opacity 0.15s, transform 0.1s;
 }
 
-.btn-primary:hover {
-  opacity: 0.88;
-  transform: translateY(-1px);
-}
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
 
-.btn-primary:active {
-  transform: translateY(0);
-}
+body.tab-work .btn-primary { background: var(--work-color); }
 
-body.tab-work .btn-primary {
-  background: var(--work-color);
+.btn-secondary {
+  background: white;
+  color: var(--text-muted);
+  border: 1px solid #ddd;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.15s;
 }
+.btn-secondary:hover { background: #f5f5f5; }
+
+.btn-danger {
+  background: white;
+  color: #e03030;
+  border: 1px solid #e03030;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-danger:hover { background: #fff0f0; }
+
+.btn-success {
+  background: white;
+  color: #1a8a4a;
+  border: 1px solid #1a8a4a;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-success:hover { background: #f0fff4; }
 
 /* ── Post Grid ── */
 #post-list {
@@ -147,9 +173,7 @@ body.tab-work .btn-primary {
 }
 
 @media (min-width: 640px) {
-  #post-list {
-    grid-template-columns: 1fr 1fr;
-  }
+  #post-list { grid-template-columns: 1fr 1fr; }
 }
 
 .loading {
@@ -167,14 +191,8 @@ body.tab-work .btn-primary {
   padding: 60px 20px;
 }
 
-.empty-state p:first-child {
-  font-size: 2.5rem;
-  margin-bottom: 12px;
-}
-
-.empty-state p:last-child {
-  font-size: 0.95rem;
-}
+.empty-state p:first-child { font-size: 2.5rem; margin-bottom: 12px; }
+.empty-state p:last-child { font-size: 0.95rem; }
 
 /* ── Post Card ── */
 .post-card {
@@ -186,17 +204,17 @@ body.tab-work .btn-primary {
   transition: box-shadow 0.2s;
 }
 
-.post-card:hover {
-  box-shadow: 0 4px 18px rgba(0,0,0,0.13);
+.post-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.13); }
+
+body.tab-work .post-card { border-left-color: var(--work-border); }
+
+/* 成約済みカード */
+.post-card.closed {
+  opacity: 0.6;
+  border-left-color: #bbb;
 }
 
-body.tab-work .post-card {
-  border-left-color: var(--work-border);
-}
-
-.post-card-header {
-  padding: 18px 18px 14px;
-}
+.post-card-header { padding: 18px 18px 14px; }
 
 .post-meta {
   display: flex;
@@ -252,14 +270,16 @@ body.tab-work .post-author {
   font-weight: 500;
 }
 
-.badge-budget {
-  background: #fff0e6;
-  color: #b34900;
-}
+.badge-budget { background: #fff0e6; color: #b34900; }
+.badge-skills { background: #e6f4ff; color: #0055aa; }
 
-.badge-skills {
-  background: #e6f4ff;
-  color: #0055aa;
+.badge-closed {
+  background: #eee;
+  color: #888;
+  font-size: 0.78rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 600;
 }
 
 .toggle-detail-btn {
@@ -275,20 +295,16 @@ body.tab-work .post-author {
   text-align: center;
 }
 
-.toggle-detail-btn:hover {
-  background: #f0f0f0;
-}
+.toggle-detail-btn:hover { background: #f0f0f0; }
 
-/* ── Post Detail (expanded) ── */
+/* ── Post Detail ── */
 .post-detail {
   border-top: 1px solid #eee;
   padding: 18px;
   background: #fafafa;
 }
 
-.detail-section {
-  margin-bottom: 14px;
-}
+.detail-section { margin-bottom: 14px; }
 
 .detail-label {
   font-size: 0.78rem;
@@ -313,8 +329,16 @@ body.tab-work .post-author {
   word-break: break-all;
 }
 
-body.tab-work .contact-value {
-  color: var(--work-color);
+body.tab-work .contact-value { color: var(--work-color); }
+
+/* 投稿者操作ボタン */
+.post-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #ddd;
 }
 
 /* ── Comments ── */
@@ -346,16 +370,8 @@ body.tab-work .contact-value {
   margin-bottom: 4px;
 }
 
-.comment-author {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.comment-date {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
+.comment-author { font-size: 0.8rem; font-weight: 600; color: var(--text); }
+.comment-date { font-size: 0.75rem; color: var(--text-muted); }
 
 .comment-body {
   font-size: 0.88rem;
@@ -364,13 +380,8 @@ body.tab-work .contact-value {
   word-break: break-word;
 }
 
-.no-comments {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-bottom: 12px;
-}
+.no-comments { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
 
-/* コメント入力フォーム */
 .comment-form {
   display: flex;
   flex-direction: column;
@@ -413,13 +424,8 @@ body.tab-work .comment-form textarea:focus {
   transition: opacity 0.15s;
 }
 
-.btn-comment:hover {
-  opacity: 0.85;
-}
-
-body.tab-work .btn-comment {
-  background: var(--work-color);
-}
+.btn-comment:hover { opacity: 0.85; }
+body.tab-work .btn-comment { background: var(--work-color); }
 
 /* ── Modal ── */
 .modal-overlay {
@@ -433,9 +439,7 @@ body.tab-work .btn-comment {
   padding: 16px;
 }
 
-.modal-overlay.hidden {
-  display: none;
-}
+.modal-overlay.hidden { display: none; }
 
 .modal {
   background: var(--white);
@@ -448,15 +452,15 @@ body.tab-work .btn-comment {
   position: relative;
 }
 
+.modal-small { max-width: 360px; }
+
 .modal h2 {
   font-size: 1.2rem;
   margin-bottom: 20px;
   color: var(--hire-color);
 }
 
-body.tab-work .modal h2 {
-  color: var(--work-color);
-}
+body.tab-work .modal h2 { color: var(--work-color); }
 
 .modal-close {
   position: absolute;
@@ -472,14 +476,10 @@ body.tab-work .modal h2 {
   transition: background 0.15s;
 }
 
-.modal-close:hover {
-  background: #f0f0f0;
-}
+.modal-close:hover { background: #f0f0f0; }
 
 /* フォーム */
-.form-group {
-  margin-bottom: 16px;
-}
+.form-group { margin-bottom: 16px; }
 
 .form-group label {
   display: block;
@@ -514,28 +514,104 @@ body.tab-work .form-group textarea:focus {
   box-shadow: 0 0 0 3px rgba(26,127,168,0.1);
 }
 
-.required {
-  color: #e03030;
-  font-size: 0.78rem;
-  font-weight: 400;
-  margin-left: 4px;
+.required { color: #e03030; font-size: 0.78rem; font-weight: 400; margin-left: 4px; }
+.optional { color: var(--text-muted); font-size: 0.78rem; font-weight: 400; margin-left: 4px; }
+.form-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+.btn-submit { width: 100%; padding: 13px; font-size: 1rem; margin-top: 6px; border-radius: 8px; }
+
+.auth-desc { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 16px; margin-top: -10px; }
+
+.hidden { display: none !important; }
+
+/* ── Admin Page ── */
+.admin-header {
+  background: #2d2d2d;
+  color: white;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.optional {
-  color: var(--text-muted);
-  font-size: 0.78rem;
-  font-weight: 400;
-  margin-left: 4px;
+.admin-header h1 { font-size: 1.2rem; }
+
+.admin-main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
 }
 
-.btn-submit {
-  width: 100%;
-  padding: 13px;
-  font-size: 1rem;
-  margin-top: 6px;
-  border-radius: 8px;
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
 }
 
-.hidden {
-  display: none !important;
+.admin-tab {
+  padding: 8px 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
 }
+
+.admin-tab.active {
+  background: #2d2d2d;
+  color: white;
+  border-color: #2d2d2d;
+}
+
+.admin-post-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin-bottom: 16px;
+  border-left: 4px solid #ddd;
+}
+
+.admin-post-card.hire { border-left-color: var(--hire-border); }
+.admin-post-card.work { border-left-color: var(--work-border); }
+.admin-post-card.closed { opacity: 0.6; }
+.admin-post-card.hidden-post { border-left-color: #ccc; background: #f9f9f9; }
+
+.admin-post-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.admin-type-badge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badge-hire { background: var(--hire-light); color: var(--hire-color); }
+.badge-work { background: var(--work-light); color: var(--work-color); }
+.badge-hidden { background: #eee; color: #888; }
+.badge-closed-admin { background: #eee; color: #888; }
+
+.admin-post-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.admin-post-desc { font-size: 0.85rem; color: #555; margin-bottom: 10px; line-height: 1.5; }
+
+.admin-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.admin-login {
+  max-width: 360px;
+  margin: 80px auto;
+  background: white;
+  border-radius: 14px;
+  padding: 36px 28px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.admin-login h2 { font-size: 1.3rem; margin-bottom: 8px; }
+.admin-login p { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 24px; }

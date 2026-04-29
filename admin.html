@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理画面 | TSUお仕事マッチング</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ログイン画面 -->
+  <div id="login-screen">
+    <div class="admin-login">
+      <h2>🔐 管理画面</h2>
+      <p>管理者パスワードを入力してください</p>
+      <div class="form-group">
+        <input type="password" id="login-password" placeholder="パスワード" maxlength="50"
+               onkeydown="if(event.key==='Enter') doLogin()">
+      </div>
+      <button class="btn-primary btn-submit" onclick="doLogin()">ログイン</button>
+    </div>
+  </div>
+
+  <!-- 管理画面本体 -->
+  <div id="admin-screen" class="hidden">
+    <div class="admin-header">
+      <h1>⚙️ 管理画面 | TSUお仕事マッチング</h1>
+      <div style="display:flex;gap:12px;align-items:center">
+        <a href="index.html" style="color:#aaa;font-size:0.85rem;text-decoration:none">← サイトに戻る</a>
+        <button class="btn-secondary" onclick="doLogout()">ログアウト</button>
+      </div>
+    </div>
+
+    <div class="admin-main">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchAdminTab('all')">すべて</button>
+        <button class="admin-tab" onclick="switchAdminTab('hire')">仕事をお願いしたい</button>
+        <button class="admin-tab" onclick="switchAdminTab('work')">仕事を受けたい</button>
+        <button class="admin-tab" onclick="switchAdminTab('closed')">成約済み</button>
+        <button class="admin-tab" onclick="switchAdminTab('hidden')">非表示</button>
+      </div>
+
+      <div id="admin-post-list">
+        <div class="loading">読み込み中...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 編集モーダル -->
+  <div id="admin-edit-overlay" class="modal-overlay hidden" onclick="if(event.target===this)closeAdminEdit()">
+    <div class="modal">
+      <button class="modal-close" onclick="closeAdminEdit()">✕</button>
+      <h2>投稿を編集する</h2>
+      <form id="admin-edit-form" onsubmit="submitAdminEdit(event)">
+        <input type="hidden" id="ae-id">
+        <input type="hidden" id="ae-type">
+        <div class="form-group">
+          <label for="ae-author">ニックネーム</label>
+          <input type="text" id="ae-author" required maxlength="50">
+        </div>
+        <div class="form-group">
+          <label for="ae-title">タイトル</label>
+          <input type="text" id="ae-title" required maxlength="100">
+        </div>
+        <div class="form-group">
+          <label for="ae-description">詳細</label>
+          <textarea id="ae-description" rows="5" required maxlength="2000"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="ae-contact">連絡先</label>
+          <input type="text" id="ae-contact" required maxlength="200">
+        </div>
+        <div id="ae-hire-fields">
+          <div class="form-group">
+            <label for="ae-budget">予算感</label>
+            <input type="text" id="ae-budget" maxlength="100">
+          </div>
+        </div>
+        <div id="ae-work-fields" class="hidden">
+          <div class="form-group">
+            <label for="ae-skills">スキル</label>
+            <input type="text" id="ae-skills" maxlength="200">
+          </div>
+          <div class="form-group">
+            <label for="ae-experience">経験</label>
+            <textarea id="ae-experience" rows="2" maxlength="500"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="ae-desired">希望する仕事の種類</label>
+            <input type="text" id="ae-desired" maxlength="200">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ae-status">ステータス</label>
+          <select id="ae-status" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:0.92rem;font-family:inherit">
+            <option value="active">公開中</option>
+            <option value="closed">成約済み</option>
+            <option value="hidden">非表示</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary btn-submit">更新する</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
