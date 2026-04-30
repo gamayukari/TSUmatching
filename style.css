@@ -208,8 +208,18 @@ body.tab-work .post-card { border-left-color: var(--work-border); }
 
 /* 成約済みカード */
 .post-card.closed {
-  opacity: 0.6;
+  opacity: 0.75;
   border-left-color: #bbb;
+}
+
+.closed-banner {
+  background: #888;
+  color: white;
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 7px;
+  letter-spacing: 0.05em;
 }
 
 .post-card-header { padding: 18px 18px 14px; }

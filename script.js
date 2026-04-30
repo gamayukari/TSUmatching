@@ -76,6 +76,7 @@ function renderCard(post) {
 
   return `
     <div class="post-card${isClosed ? ' closed' : ''}" id="card-${post.id}">
+      ${isClosed ? `<div class="closed-banner">🤝 ご成約済み</div>` : ''}
       <div class="post-card-header">
         <div class="post-meta">
           <span class="post-author">${escapeHtml(post.author_name)}</span>
