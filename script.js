@@ -204,23 +204,7 @@ function handleAuthOverlayClick(event) {
   if (event.target === document.getElementById('auth-modal-overlay')) closeAuthModal();
 }
 
-async function confirmAuth() {
-  if (!pendingAuthAction) return;
-  const { action, postId, editKey, authorEmail } = pendingAuthAction;
-  const enteredEmail = document.getElementById('auth-email').value.trim();
-  const enteredPassword = document.getElementById('auth-password').value;
 
-  if (enteredEmail !== authorEmail || enteredPassword !== editKey) {
-    alert('メールアドレスまたはパスワードが違います');
-    return;
-  }
-
-  closeAuthModal();
-
-  if (action === 'edit') await openEditModal(postId);
-  if (action === 'delete') await deletePost(postId);
-  if (action === 'close') await closePost(postId);
-}
 
 // ─── 成約済みにする ──────────────────────────────────────────────
 async function closePost(postId) {
@@ -337,12 +321,17 @@ async function loadComments(postId, isClosed = false) {
   const commentListHtml = comments.length === 0
     ? '<div class="no-comments">まだコメントはありません</div>'
     : comments.map(c => `
-        <div class="comment-item">
+        <div class="comment-item" id="comment-${c.id}">
           <div class="comment-meta">
             <span class="comment-author">${escapeHtml(c.author_name)}</span>
             <span class="comment-date">${formatDate(c.created_at)}</span>
+            ${c.edit_key && c.author_email ? `
+              <span style="margin-left:auto;display:flex;gap:6px;">
+                <button class="btn-secondary" style="padding:2px 10px;font-size:0.75rem;" onclick="requestCommentAuth('edit','${c.id}','${escapeHtml(c.edit_key)}','${escapeHtml(c.author_email)}','${postId}')">編集</button>
+                <button class="btn-danger" style="padding:2px 10px;font-size:0.75rem;" onclick="requestCommentAuth('delete','${c.id}','${escapeHtml(c.edit_key)}','${escapeHtml(c.author_email)}','${postId}')">削除</button>
+              </span>` : ''}
           </div>
-          <div class="comment-body">${escapeHtml(c.content)}</div>
+          <div class="comment-body" id="comment-body-${c.id}">${escapeHtml(c.content)}</div>
         </div>`).join('');
 
   const commentForm = isClosed
@@ -350,6 +339,11 @@ async function loadComments(postId, isClosed = false) {
     : `<form class="comment-form" onsubmit="submitComment(event, '${postId}')">
         <input type="text" id="c-author-${postId}" placeholder="ニックネーム" required maxlength="50">
         <textarea id="c-body-${postId}" rows="3" placeholder="コメントを書く..." required maxlength="500"></textarea>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <input type="email" id="c-email-${postId}" placeholder="メールアドレス（編集・削除用）" maxlength="200" style="flex:1;min-width:200px;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:0.88rem;font-family:inherit;">
+          <input type="password" id="c-key-${postId}" placeholder="パスワード（編集・削除用）" maxlength="50" style="flex:1;min-width:150px;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:0.88rem;font-family:inherit;">
+        </div>
+        <p style="font-size:0.75rem;color:#999;margin-top:-4px;">※メールとパスワードを設定すると後から編集・削除できます</p>
         <button type="submit" class="btn-comment">送信</button>
       </form>`;
 
@@ -364,6 +358,8 @@ async function submitComment(event, postId) {
   event.preventDefault();
   const authorInput = document.getElementById(`c-author-${postId}`);
   const bodyInput = document.getElementById(`c-body-${postId}`);
+  const emailInput = document.getElementById(`c-email-${postId}`);
+  const keyInput = document.getElementById(`c-key-${postId}`);
   const btn = event.target.querySelector('button[type="submit"]');
 
   const author = authorInput.value.trim();
@@ -373,9 +369,13 @@ async function submitComment(event, postId) {
   btn.disabled = true;
   btn.textContent = '送信中...';
 
-  const { error } = await supabaseClient
-    .from('comments')
-    .insert({ post_id: postId, author_name: author, content });
+  const commentData = { post_id: postId, author_name: author, content };
+  const email = emailInput ? emailInput.value.trim() : '';
+  const key = keyInput ? keyInput.value.trim() : '';
+  if (email) commentData.author_email = email;
+  if (key) commentData.edit_key = key;
+
+  const { error } = await supabaseClient.from('comments').insert(commentData);
 
   btn.disabled = false;
   btn.textContent = '送信';
@@ -384,7 +384,90 @@ async function submitComment(event, postId) {
 
   authorInput.value = '';
   bodyInput.value = '';
+  if (emailInput) emailInput.value = '';
+  if (keyInput) keyInput.value = '';
   await loadComments(postId);
+}
+
+// ─── コメント認証 ────────────────────────────────────────────────
+let pendingCommentAction = null;
+
+function requestCommentAuth(action, commentId, editKey, authorEmail, postId) {
+  pendingCommentAction = { action, commentId, editKey, authorEmail, postId };
+  document.getElementById('auth-modal-title').textContent = action === 'edit' ? 'コメントを編集' : 'コメントを削除';
+  document.getElementById('auth-email').value = '';
+  document.getElementById('auth-password').value = '';
+  document.getElementById('auth-modal-overlay').classList.remove('hidden');
+  document.getElementById('auth-email').focus();
+}
+
+async function confirmAuth() {
+  if (pendingCommentAction) {
+    const { action, commentId, editKey, authorEmail, postId } = pendingCommentAction;
+    const enteredEmail = document.getElementById('auth-email').value.trim();
+    const enteredPassword = document.getElementById('auth-password').value;
+
+    if (enteredEmail !== authorEmail || enteredPassword !== editKey) {
+      alert('メールアドレスまたはパスワードが違います');
+      return;
+    }
+
+    closeAuthModal();
+    pendingCommentAction = null;
+
+    if (action === 'delete') await deleteComment(commentId, postId);
+    if (action === 'edit') showCommentEditForm(commentId, postId);
+    return;
+  }
+
+  if (!pendingAuthAction) return;
+  const { action, postId, editKey, authorEmail } = pendingAuthAction;
+  const enteredEmail = document.getElementById('auth-email').value.trim();
+  const enteredPassword = document.getElementById('auth-password').value;
+
+  if (enteredEmail !== authorEmail || enteredPassword !== editKey) {
+    alert('メールアドレスまたはパスワードが違います');
+    return;
+  }
+
+  closeAuthModal();
+  if (action === 'edit') await openEditModal(postId);
+  if (action === 'delete') await deletePost(postId);
+  if (action === 'close') await closePost(postId);
+}
+
+async function deleteComment(commentId, postId) {
+  if (!confirm('このコメントを削除しますか？')) return;
+  const { error } = await supabaseClient.from('comments').delete().eq('id', commentId);
+  if (error) { alert('削除に失敗しました'); return; }
+  await loadComments(postId);
+}
+
+function showCommentEditForm(commentId, postId) {
+  const bodyEl = document.getElementById(`comment-body-${commentId}`);
+  if (!bodyEl) return;
+  const currentText = bodyEl.textContent;
+  bodyEl.innerHTML = `
+    <textarea id="edit-comment-text-${commentId}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:0.88rem;font-family:inherit;resize:vertical;" rows="3">${escapeHtml(currentText)}</textarea>
+    <div style="display:flex;gap:8px;margin-top:6px;">
+      <button class="btn-primary" style="padding:5px 14px;font-size:0.82rem;" onclick="submitCommentEdit('${commentId}','${postId}')">保存</button>
+      <button class="btn-secondary" style="padding:5px 14px;font-size:0.82rem;" onclick="cancelCommentEdit('${commentId}','${escapeHtml(currentText)}')">キャンセル</button>
+    </div>`;
+}
+
+async function submitCommentEdit(commentId, postId) {
+  const textarea = document.getElementById(`edit-comment-text-${commentId}`);
+  const newContent = textarea.value.trim();
+  if (!newContent) return;
+
+  const { error } = await supabaseClient.from('comments').update({ content: newContent }).eq('id', commentId);
+  if (error) { alert('更新に失敗しました'); return; }
+  await loadComments(postId);
+}
+
+function cancelCommentEdit(commentId, originalText) {
+  const bodyEl = document.getElementById(`comment-body-${commentId}`);
+  if (bodyEl) bodyEl.innerHTML = escapeHtml(originalText);
 }
 
 // ─── 投稿モーダル ────────────────────────────────────────────────
