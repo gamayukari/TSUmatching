@@ -14,6 +14,42 @@ document.addEventListener('DOMContentLoaded', () => {
   loadPosts('hire');
 });
 
+// ─── サイトの使い方・免責事項モーダル ──────────────────────────
+const INFO_CONTENT = {
+  how: {
+    title: '📖 サイトの使い方',
+    body: `
+      <p>TSUお仕事マッチングサイトは、仕事を依頼したい方と受けたい方をつなぐ掲示板です。</p>
+      <p>「仕事をお願いしたい（オレンジ）」「仕事を受けたい（ブルー）」のタブを切り替えて、希望の方に書き込みをしてください。</p>
+      <p>仕事が決まったら「成約済み」にしてください。TSU運営が掲載不要と判断した段階で削除します。</p>
+      <p>パスワードは今回限りのものです。わからなくなったら、えれなに問い合わせをしてください。</p>
+    `
+  },
+  disclaimer: {
+    title: '⚠️ 免責事項',
+    body: `
+      <ul>
+        <li>投稿内容の正確性・信頼性について、TSU運営は一切保証しません</li>
+        <li>利用者間のトラブルについて、TSU運営は責任を負いません</li>
+        <li>個人情報の取り扱いは各自の責任で行ってください</li>
+        <li>誹謗中傷・スパム・違法な内容の投稿は禁止です</li>
+        <li>TSU運営は予告なく投稿を削除・非表示にする場合があります</li>
+      </ul>
+    `
+  }
+};
+
+function openInfoModal(type) {
+  const content = INFO_CONTENT[type];
+  document.getElementById('info-modal-title').textContent = content.title;
+  document.getElementById('info-modal-body').innerHTML = content.body;
+  document.getElementById('info-modal-overlay').classList.remove('hidden');
+}
+
+function closeInfoModal() {
+  document.getElementById('info-modal-overlay').classList.add('hidden');
+}
+
 // ─── タブ切り替え ────────────────────────────────────────────────
 function switchTab(tab) {
   currentTab = tab;

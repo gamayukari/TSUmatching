@@ -11,7 +11,20 @@
   <header>
     <h1>TSUお仕事マッチングサイト</h1>
     <p>仕事を依頼したい方・受けたい方のための掲示板です</p>
+    <div class="header-links">
+      <button class="header-link-btn" onclick="openInfoModal('how')">📖 サイトの使い方</button>
+      <button class="header-link-btn" onclick="openInfoModal('disclaimer')">⚠️ 免責事項</button>
+    </div>
   </header>
+
+  <!-- サイトの使い方・免責事項モーダル -->
+  <div id="info-modal-overlay" class="modal-overlay hidden" onclick="if(event.target===this)closeInfoModal()">
+    <div class="modal">
+      <button class="modal-close" onclick="closeInfoModal()">✕</button>
+      <h2 id="info-modal-title"></h2>
+      <div id="info-modal-body" class="info-body"></div>
+    </div>
+  </div>
 
   <div class="tabs">
     <button id="tab-hire" class="tab active" onclick="switchTab('hire')">
